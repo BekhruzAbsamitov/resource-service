@@ -37,13 +37,21 @@ public class ResourceService {
         mp3File.setName(multipartFile.getOriginalFilename());
         mp3File.setData(multipartFile.getBytes());
 
+        try {
+            getMetadata(multipartFile);
+        } catch (TikaException | SAXException e ) {
+            throw new RuntimeException(e);
+        }
+
         Mp3File savedFile = resourceRepository.save(mp3File);
         Integer savedFileId = savedFile.getId();
+
         try {
             saveSongMetadata(multipartFile, savedFileId);
         } catch (Exception e) {
             log.error("Error while parsing the mp3 file", e);
         }
+
 
 
         return savedFileId;
@@ -61,16 +69,19 @@ public class ResourceService {
     }
 
     private void saveSongMetadata(MultipartFile multipartFile, Integer id) throws IOException, TikaException, SAXException {
+        Metadata metadata = getMetadata(multipartFile);
+        MetadataDto metadataDto = buildMetadata(metadata, id);
+        restTemplate.postForEntity("http://song-service:8081/api/v1/song", metadataDto, Integer.class);
+    }
+
+    private Metadata getMetadata(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
         Mp3Parser mp3Parser = new Mp3Parser();
         BodyContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
         ParseContext context = new ParseContext();
 
         mp3Parser.parse(multipartFile.getInputStream(), handler, metadata, context);
-
-        MetadataDto metadataDto = buildMetadata(metadata, id);
-
-        restTemplate.postForEntity("http://song-service:8081/api/v1/song", metadataDto, Integer.class);
+        return metadata;
     }
 
     private MetadataDto buildMetadata(Metadata metadata, Integer resourceId) {
