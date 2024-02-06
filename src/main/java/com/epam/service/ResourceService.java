@@ -70,7 +70,7 @@ public class ResourceService {
 
         MetadataDto metadataDto = buildMetadata(metadata, id);
 
-        restTemplate.postForEntity("http://localhost:8081/api/v1/song", metadataDto, Integer.class);
+        restTemplate.postForEntity("http://song-service:8081/api/v1/song", metadataDto, Integer.class);
     }
 
     private MetadataDto buildMetadata(Metadata metadata, Integer resourceId) {
@@ -85,7 +85,7 @@ public class ResourceService {
 
     private String getDurationInMinutes(String duration) {
         int value = Integer.parseInt(duration.substring(0, duration.indexOf(".")));
-        return value % 60 + ":" + value / 60;
+        return (value / 60) + ":" + (value % 60);
     }
 
 

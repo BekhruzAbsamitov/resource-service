@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: postgres
+    username: username
     password: password
-    url: jdbc:postgresql://host.docker.internal:5432/resource_db
+    url: jdbc:postgresql://localhost:5432/resource_db
   jpa:
     hibernate:
       ddl-auto: create
