@@ -2,10 +2,13 @@ spring:
   datasource:
     username: postgres
     password: password
-    url: jdbc:postgresql://localhost:5432/resource_db
+    url: jdbc:postgresql://host.docker.internal:5432/resource_db
   jpa:
     hibernate:
       ddl-auto: create
   servlet:
     multipart:
       max-file-size: 10MB
+
+server:
+  port: 8080
