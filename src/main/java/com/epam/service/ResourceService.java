@@ -71,7 +71,7 @@ public class ResourceService {
     private void saveSongMetadata(MultipartFile multipartFile, Integer id) throws IOException, TikaException, SAXException {
         Metadata metadata = getMetadata(multipartFile);
         MetadataDto metadataDto = buildMetadata(metadata, id);
-        restTemplate.postForEntity("http://song-service:8081/api/v1/song", metadataDto, Integer.class);
+        restTemplate.postForEntity("http://SONG-SERVICE/api/v1/song", metadataDto, Integer.class);
     }
 
     private Metadata getMetadata(MultipartFile multipartFile) throws IOException, TikaException, SAXException {
